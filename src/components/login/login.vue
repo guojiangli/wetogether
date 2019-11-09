@@ -37,7 +37,7 @@
   </div>
 </template>
 <!-- 引入饿了么组件库 -->
-<script src="/Users/jamlee/we_together/wetogether/public/lib/weui/weui.js"></script>
+<script src="/Users/jamlee/we_together/wetogether/public/lib/weui/weui.min.js"></script>
 <script>
 import service from '@/utils/service'
 // import { getCookie } from '@/utils/cookie'
@@ -61,11 +61,6 @@ export default {
       this.$router.go(-1)
     },
     async getCode () {
-      // if (!navigator.serviceWorker) {
-      //   weui.topTips('请使用指定浏览器，体验前沿的技术')
-      //   return
-      // }
-      // 验证手机号是否合法
       if (!/^\d{11}$/.test(this.phoneNum)) {
         weui.topTips('请输入正确手机号')
         return
@@ -75,8 +70,9 @@ export default {
         let resp = await service.get('users/phonecode', {
           phonenum: this.phoneNum
         })
+
         if (resp.code === 0) {
-          weui.toast('验证码已发送', 1000)
+          this.code = resp.data
           // 动态倒计时
           this.countTimeCode()
         }
@@ -107,6 +103,7 @@ export default {
             weui.topTips('操作频繁，请输入图形验证码')
             return
           }
+          alert(resp.data)
           // 登录成功后，将当前用户的数据存入store，以便后续使用
           this.$store.dispatch('setUser', resp.data)
           this.$router.go(-1)

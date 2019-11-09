@@ -1,8 +1,10 @@
 import axios from 'axios'
 // import router from '../router'
 import { getCookie } from './cookie'
+import weui from 'weui.js'
 
-const baseURL = process.env.NODE_ENV === 'production' ? '/' : '//localhost:3000/'
+
+const baseURL = 'http://127.0.0.1:8200/'
 
 // 创建axios实例
 let service = axios.create({
@@ -21,19 +23,13 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     if (response.data.code === 1000) {
-      router.push({
-        path: 'login',
-        name: 'login',
-        params: {
-        }
-      })
       weui.topTips('请先登录')
       // 发现登录过期，将本地缓存的用户信息清除
       window.localStorage.removeItem('cuser')
     } else if (response.data.code !== 0) {
+
       weui.topTips(response.data.msg || '接口请求失败')
     }
-
     return response.data
   },
   error => {
